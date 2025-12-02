@@ -19,7 +19,8 @@
 ## How to run
 0) Delete any possible trash
 ```bash
-rm -rf dbt/dbt_packages
+rm -rf dbt/dbt_packages dbt/target dbt/logs
+mkdir -p dbt/data
 ```
 
 1) Install deps
@@ -30,37 +31,37 @@ pip install -r requirements.txt
 2) Pull dbt packages
 ```bash
 cd dbt
-DBT_PROFILES_DIR=. dbt deps
+DBT_PROFILES_DIR=$(pwd)/dbt dbt deps --project-dir dbt
 ```
 
 3) Build everything (seed → run → test)
 ```bash
-DBT_PROFILES_DIR=. dbt seed
-DBT_PROFILES_DIR=. dbt run
-DBT_PROFILES_DIR=. dbt test
+DBT_PROFILES_DIR=$(pwd)/dbt dbt seed   --project-dir dbt
+DBT_PROFILES_DIR=$(pwd)/dbt dbt run    --project-dir dbt
+DBT_PROFILES_DIR=$(pwd)/dbt dbt test   --project-dir dbt
 ```
 For the new dbt 1.8 unit test: `DBT_PROFILES_DIR=. dbt test --select test_type:unit`.
 
 4) Generate docs
 ```bash
-cd dbt
-DBT_PROFILES_DIR=. dbt docs generate
-DBT_PROFILES_DIR=. dbt docs serve --port 8080  
+DBT_PROFILES_DIR=$(pwd)/dbt dbt docs generate --project-dir dbt
+DBT_PROFILES_DIR=$(pwd)/dbt dbt docs serve --project-dir dbt --port 8080
 ```
 
 5) Lint SQL
 ```bash
-make lint       # sqlfluff lint
-make fmt        # sqlfluff fix
+DBT_PROFILES_DIR=$(pwd)/dbt make lint  
+DBT_PROFILES_DIR=$(pwd)/dbt make fmt    
 ```
 
 6) Pre-commit
 ```bash
 pre-commit install
-pre-commit run --all-files
+DBT_PROFILES_DIR=$(pwd)/dbt pre-commit run --all-files
 ```
 
 ## Results
+### Terminal
 ```bash
 (base) roman@romans-MacBook-Pro-2 hw4-mlops-bokhyan % pip install -r requirements.txt
 Requirement already satisfied: dbt-core==1.8.2 in /Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages (from -r requirements.txt (line 1)) (1.8.2)
@@ -364,5 +365,63 @@ file dbt/models/marts/mart_customer_risk_profile.sql:   0%|                     
 === [dbt templater] Compiling dbt project...                                                                                                           
 === [dbt templater] Project Compiled.                                                                                                                  
 All Finished 📜 🎉!
+(base) roman@romans-MacBook-Pro-2 hw4-mlops-bokhyan %DBT_PROFILES_DIR=$(pwd)/dbt pre-commit run --all-files
 
+12:16:36  Running with dbt=1.8.2
+12:16:37  [WARNING]: Deprecated functionality
+The `calogica/dbt_date` package is deprecated in favor of
+`godatadriven/dbt_date`. Please update your `packages.yml` configuration to use
+`godatadriven/dbt_date` instead.
+12:16:37  Installing dbt-labs/dbt_utils
+12:16:37  Installed from version 1.3.2
+12:16:37  Up to date!
+12:16:37  Installing calogica/dbt_date
+12:16:38  Installed from version 0.10.1
+12:16:38  Up to date!
+12:16:38  Installing calogica/dbt_expectations
+12:16:39  Installed from version 0.10.4
+12:16:39  Up to date!
+sqlfluff-lint............................................................Passed
+sqlfluff-fix.............................................................Passed
+fix end of files.........................................................Passed
+trim trailing whitespace.................................................Passed
+(base) roman@romans-MacBook-Pro-2 hw4-mlops-bokhyan % 
+
+```
+### Configs
+.pre-commit-config.yaml
+```
+repos:
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: 3.0.7
+    hooks:
+      - id: sqlfluff-lint
+        args: [--dialect, duckdb, --config, .sqlfluff]
+        additional_dependencies:
+          - sqlfluff-templater-dbt==3.0.7
+          - dbt-duckdb>=1.8.0
+
+      - id: sqlfluff-fix
+        args: [--dialect, duckdb, --config, .sqlfluff]
+        additional_dependencies:
+          - sqlfluff-templater-dbt==3.0.7
+          - dbt-duckdb>=1.8.0
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+```
+.sqlfluff
+```
+[sqlfluff]
+dialect = duckdb
+templater = dbt
+exclude_rules = L031,L034
+max_line_length = 120
+
+[sqlfluff:templater:dbt]
+project_dir = dbt
+profiles_dir = dbt
 ```
