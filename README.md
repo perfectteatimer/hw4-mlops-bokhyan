@@ -332,4 +332,37 @@ DBT_PROFILES_DIR=. dbt test
 12:01:59  Completed successfully
 12:01:59  
 12:01:59  Done. PASS=57 WARN=0 ERROR=0 SKIP=0 TOTAL=57
+(base) roman@romans-MacBook-Pro-2 hw4-mlops-bokhyan % DBT_PROFILES_DIR=$(pwd)/dbt make fmt
+
+sqlfluff fix dbt/models dbt/tests --config .sqlfluff
+==== finding fixable violations ====
+=== [dbt templater] Sorting Nodes...                                                                                                                   
+file dbt/models/marts/mart_customer_risk_profile.sql:   0%|                                                                      | 0/9 [00:00<?, ?it/s]12:11:21  Registered adapter: duckdb=1.8.2
+=== [dbt templater] Compiling dbt project...                                                                                                           
+=== [dbt templater] Project Compiled.                                                                                                                  
+==== no fixable linting violations found ====                                                                                                          
+All Finished 📜 🎉!
+DBT_PROFILES_DIR=$(pwd)/dbt make lint
+
+12:12:37  Running with dbt=1.8.2
+12:12:38  [WARNING]: Deprecated functionality
+The `calogica/dbt_date` package is deprecated in favor of
+`godatadriven/dbt_date`. Please update your `packages.yml` configuration to use
+`godatadriven/dbt_date` instead.
+12:12:38  Installing dbt-labs/dbt_utils
+12:12:39  Installed from version 1.3.2
+12:12:39  Up to date!
+12:12:39  Installing calogica/dbt_date
+12:12:39  Installed from version 0.10.1
+12:12:39  Up to date!
+12:12:39  Installing calogica/dbt_expectations
+12:12:40  Installed from version 0.10.4
+12:12:40  Up to date!
+sqlfluff lint dbt/models dbt/tests --config .sqlfluff
+=== [dbt templater] Sorting Nodes...                                                                                                                   
+file dbt/models/marts/mart_customer_risk_profile.sql:   0%|                                                                      | 0/9 [00:00<?, ?it/s]12:12:42  Registered adapter: duckdb=1.8.2
+=== [dbt templater] Compiling dbt project...                                                                                                           
+=== [dbt templater] Project Compiled.                                                                                                                  
+All Finished 📜 🎉!
+
 ```
