@@ -1,6 +1,5 @@
-# dbt fraud analytics homework
+# hw 4 bokhyan mlops
 
-This repo contains a dbt project on top of `train.csv` with a simple DuckDB target. The pipeline loads the csv as a seed, cleans it in a staging view, and builds six marts for fraud analytics.
 
 ## Project highlights
 - DuckDB profile stored in `dbt/profiles.yml` using local file `dbt/data/transactions.duckdb`.
