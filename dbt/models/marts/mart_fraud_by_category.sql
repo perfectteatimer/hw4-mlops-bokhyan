@@ -5,6 +5,7 @@ with base as (
         is_fraud
     from {{ ref('stg_transactions') }}
 ),
+
 agg as (
     select
         cat_id,
@@ -16,6 +17,7 @@ agg as (
     from base
     group by cat_id
 )
+
 select
     cat_id,
     transaction_count,

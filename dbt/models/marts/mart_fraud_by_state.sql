@@ -7,6 +7,7 @@ with base as (
         merchant_id
     from {{ ref('stg_transactions') }}
 ),
+
 agg as (
     select
         us_state,
@@ -20,6 +21,7 @@ agg as (
     from base
     group by us_state
 )
+
 select
     us_state,
     transaction_count,

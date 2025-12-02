@@ -6,6 +6,7 @@ with base as (
         is_fraud
     from {{ ref('stg_transactions') }}
 ),
+
 bucketed as (
     select
         day_name,
@@ -14,6 +15,7 @@ bucketed as (
         is_fraud
     from base
 )
+
 select
     day_name,
     hour_of_day,

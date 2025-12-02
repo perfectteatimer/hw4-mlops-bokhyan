@@ -31,27 +31,28 @@ pip install -r requirements.txt
 2) Pull dbt packages
 ```bash
 cd dbt
-DBT_PROFILES_DIR=$(pwd)/dbt dbt deps --project-dir dbt
+DBT_PROFILES_DIR=. dbt deps --project-dir .
 ```
 
 3) Build everything (seed → run → test)
 ```bash
-DBT_PROFILES_DIR=$(pwd)/dbt dbt seed   --project-dir dbt
-DBT_PROFILES_DIR=$(pwd)/dbt dbt run    --project-dir dbt
-DBT_PROFILES_DIR=$(pwd)/dbt dbt test   --project-dir dbt
+DBT_PROFILES_DIR=. dbt seed --project-dir .
+DBT_PROFILES_DIR=. dbt run  --project-dir .
+DBT_PROFILES_DIR=. dbt test --project-dir .
 ```
 For the new dbt 1.8 unit test: `DBT_PROFILES_DIR=. dbt test --select test_type:unit`.
 
 4) Generate docs
 ```bash
-DBT_PROFILES_DIR=$(pwd)/dbt dbt docs generate --project-dir dbt
-DBT_PROFILES_DIR=$(pwd)/dbt dbt docs serve --project-dir dbt --port 8080
+DBT_PROFILES_DIR=. dbt docs generate --project-dir .
+DBT_PROFILES_DIR=. dbt docs serve --project-dir . --port 8080
 ```
 
 5) Lint SQL
 ```bash
-DBT_PROFILES_DIR=$(pwd)/dbt make lint  
-DBT_PROFILES_DIR=$(pwd)/dbt make fmt    
+cd hw4-mlops-bokhyan
+DBT_PROFILES_DIR=$(pwd)/dbt make lint
+DBT_PROFILES_DIR=$(pwd)/dbt make fmt
 ```
 
 6) Pre-commit
@@ -61,6 +62,8 @@ DBT_PROFILES_DIR=$(pwd)/dbt pre-commit run --all-files
 ```
 
 ## Results
+### Screenshot
+![DAG overview](hw4-mlops-bokhyan/docs/Screenshot 2025-12-02 at 15.02.52.png)
 ### Terminal
 ```bash
 (base) roman@romans-MacBook-Pro-2 hw4-mlops-bokhyan % pip install -r requirements.txt
@@ -168,25 +171,25 @@ DBT_PROFILES_DIR=. dbt test
 12:01:26  Running with dbt=1.8.2
 12:01:26  Registered adapter: duckdb=1.8.2
 12:01:26  Found 7 models, 56 data tests, 2 seeds, 1 source, 805 macros, 1 unit test
-12:01:26  
+12:01:26
 12:01:26  Concurrency: 4 threads (target='dev')
-12:01:26  
+12:01:26
 12:01:26  1 of 2 START seed file main_transactions_db.states ............................. [RUN]
 12:01:26  2 of 2 START seed file main_transactions_db.transactions ....................... [RUN]
 12:01:27  1 of 2 OK loaded seed file main_transactions_db.states ......................... [INSERT 51 in 0.45s]
 12:01:53  2 of 2 OK loaded seed file main_transactions_db.transactions ................... [INSERT 786431 in 26.43s]
-12:01:53  
+12:01:53
 12:01:53  Finished running 2 seeds in 0 hours 0 minutes and 26.58 seconds (26.58s).
-12:01:53  
+12:01:53
 12:01:53  Completed successfully
-12:01:53  
+12:01:53
 12:01:53  Done. PASS=2 WARN=0 ERROR=0 SKIP=0 TOTAL=2
 12:01:55  Running with dbt=1.8.2
 12:01:55  Registered adapter: duckdb=1.8.2
 12:01:55  Found 7 models, 56 data tests, 2 seeds, 1 source, 805 macros, 1 unit test
-12:01:55  
+12:01:55
 12:01:55  Concurrency: 4 threads (target='dev')
-12:01:55  
+12:01:55
 12:01:55  1 of 7 START sql view model main_staging.stg_transactions ...................... [RUN]
 12:01:55  1 of 7 OK created sql view model main_staging.stg_transactions ................. [OK in 0.07s]
 12:01:55  2 of 7 START sql table model main_marts.mart_customer_risk_profile ............. [RUN]
@@ -201,18 +204,18 @@ DBT_PROFILES_DIR=. dbt test
 12:01:56  3 of 7 OK created sql table model main_marts.mart_daily_state_metrics .......... [OK in 0.31s]
 12:01:56  2 of 7 OK created sql table model main_marts.mart_customer_risk_profile ........ [OK in 0.38s]
 12:01:56  7 of 7 OK created sql table model main_marts.mart_merchant_analytics ........... [OK in 0.26s]
-12:01:56  
+12:01:56
 12:01:56  Finished running 1 view model, 6 table models in 0 hours 0 minutes and 0.70 seconds (0.70s).
-12:01:56  
+12:01:56
 12:01:56  Completed successfully
-12:01:56  
+12:01:56
 12:01:56  Done. PASS=7 WARN=0 ERROR=0 SKIP=0 TOTAL=7
 12:01:58  Running with dbt=1.8.2
 12:01:58  Registered adapter: duckdb=1.8.2
 12:01:58  Found 7 models, 56 data tests, 2 seeds, 1 source, 805 macros, 1 unit test
-12:01:58  
+12:01:58
 12:01:58  Concurrency: 4 threads (target='dev')
-12:01:58  
+12:01:58
 12:01:58  1 of 57 START test accepted_values_mart_customer_risk_profile_risk_level__HIGH__MEDIUM__LOW  [RUN]
 12:01:58  2 of 57 START test accepted_values_mart_merchant_analytics_suspicious_flag__0__1  [RUN]
 12:01:58  3 of 57 START test accepted_values_stg_transactions_amount_bucket__small__medium__large__extra_large__unknown  [RUN]
@@ -327,21 +330,21 @@ DBT_PROFILES_DIR=. dbt test
 12:01:59  55 of 57 PASS unique_states_state_code ......................................... [PASS in 0.06s]
 12:01:59  57 of 57 PASS stg_transactions::stg_transactions_unit .......................... [PASS in 0.16s]
 12:01:59  56 of 57 PASS unique_stg_transactions_transaction_id ........................... [PASS in 0.22s]
-12:01:59  
+12:01:59
 12:01:59  Finished running 56 data tests, 1 unit test in 0 hours 0 minutes and 1.24 seconds (1.24s).
-12:01:59  
+12:01:59
 12:01:59  Completed successfully
-12:01:59  
+12:01:59
 12:01:59  Done. PASS=57 WARN=0 ERROR=0 SKIP=0 TOTAL=57
 (base) roman@romans-MacBook-Pro-2 hw4-mlops-bokhyan % DBT_PROFILES_DIR=$(pwd)/dbt make fmt
 
 sqlfluff fix dbt/models dbt/tests --config .sqlfluff
 ==== finding fixable violations ====
-=== [dbt templater] Sorting Nodes...                                                                                                                   
+=== [dbt templater] Sorting Nodes...
 file dbt/models/marts/mart_customer_risk_profile.sql:   0%|                                                                      | 0/9 [00:00<?, ?it/s]12:11:21  Registered adapter: duckdb=1.8.2
-=== [dbt templater] Compiling dbt project...                                                                                                           
-=== [dbt templater] Project Compiled.                                                                                                                  
-==== no fixable linting violations found ====                                                                                                          
+=== [dbt templater] Compiling dbt project...
+=== [dbt templater] Project Compiled.
+==== no fixable linting violations found ====
 All Finished 📜 🎉!
 DBT_PROFILES_DIR=$(pwd)/dbt make lint
 
@@ -360,32 +363,19 @@ The `calogica/dbt_date` package is deprecated in favor of
 12:12:40  Installed from version 0.10.4
 12:12:40  Up to date!
 sqlfluff lint dbt/models dbt/tests --config .sqlfluff
-=== [dbt templater] Sorting Nodes...                                                                                                                   
+=== [dbt templater] Sorting Nodes...
 file dbt/models/marts/mart_customer_risk_profile.sql:   0%|                                                                      | 0/9 [00:00<?, ?it/s]12:12:42  Registered adapter: duckdb=1.8.2
-=== [dbt templater] Compiling dbt project...                                                                                                           
-=== [dbt templater] Project Compiled.                                                                                                                  
+=== [dbt templater] Compiling dbt project...
+=== [dbt templater] Project Compiled.
 All Finished 📜 🎉!
-(base) roman@romans-MacBook-Pro-2 hw4-mlops-bokhyan %DBT_PROFILES_DIR=$(pwd)/dbt pre-commit run --all-files
-
-12:16:36  Running with dbt=1.8.2
-12:16:37  [WARNING]: Deprecated functionality
-The `calogica/dbt_date` package is deprecated in favor of
-`godatadriven/dbt_date`. Please update your `packages.yml` configuration to use
-`godatadriven/dbt_date` instead.
-12:16:37  Installing dbt-labs/dbt_utils
-12:16:37  Installed from version 1.3.2
-12:16:37  Up to date!
-12:16:37  Installing calogica/dbt_date
-12:16:38  Installed from version 0.10.1
-12:16:38  Up to date!
-12:16:38  Installing calogica/dbt_expectations
-12:16:39  Installed from version 0.10.4
-12:16:39  Up to date!
+(base) roman@romans-MacBook-Pro-2 hw4-mlops-bokhyan % pre-commit install
+DBT_PROFILES_DIR=$(pwd)/dbt pre-commit run --all-files
+pre-commit installed at .git/hooks/pre-commit
 sqlfluff-lint............................................................Passed
 sqlfluff-fix.............................................................Passed
 fix end of files.........................................................Passed
 trim trailing whitespace.................................................Passed
-(base) roman@romans-MacBook-Pro-2 hw4-mlops-bokhyan % 
+(base) roman@romans-MacBook-Pro-2 hw4-mlops-bokhyan %
 
 ```
 ### Configs

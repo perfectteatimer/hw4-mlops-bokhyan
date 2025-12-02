@@ -1,6 +1,7 @@
 with source as (
     select * from {{ source('transactions_db', 'transactions') }}
 ),
+
 renamed as (
     select
         {{ dbt_utils.generate_surrogate_key([
@@ -37,15 +38,18 @@ renamed as (
         nullif(jobs, '') as job_title,
         cast(population_city as bigint) as population_city,
         cast(target as integer) as is_fraud,
-        case when {{ amount_bucket('cast(amount as double)') }} in ('large', 'extra_large') then 1 else 0 end as is_large_amount
+        case when {{ amount_bucket('cast(amount as double)') }} in ('large', 'extra_large') then 1 else 0 end
+            as is_large_amount
     from source
 ),
+
 with_states as (
     select
         r.*,
         s.state_name
-    from renamed r
-    left join {{ ref('states') }} s
+    from renamed as r
+    left join {{ ref('states') }} as s
         on r.us_state = s.state_code
 )
+
 select * from with_states

@@ -10,6 +10,7 @@ with base as (
         transaction_date
     from {{ ref('stg_transactions') }}
 ),
+
 agg as (
     select
         customer_id,
@@ -26,12 +27,14 @@ agg as (
     from base
     group by customer_id
 ),
+
 scored as (
     select
         *,
         case when transaction_count = 0 then 0 else large_txn_count * 1.0 / transaction_count end as large_txn_share
     from agg
 ),
+
 final as (
     select
         customer_id,
@@ -52,4 +55,5 @@ final as (
         end as risk_level
     from scored
 )
+
 select * from final

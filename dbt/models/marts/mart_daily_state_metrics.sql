@@ -7,6 +7,7 @@ with base as (
         is_fraud
     from {{ ref('stg_transactions') }}
 ),
+
 agg as (
     select
         transaction_date,
@@ -21,6 +22,7 @@ agg as (
     from base
     group by transaction_date, us_state
 )
+
 select
     transaction_date,
     us_state,
