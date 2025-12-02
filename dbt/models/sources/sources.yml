@@ -1,0 +1,63 @@
+version: 2
+
+sources:
+  - name: transactions_db
+    description: Seeded raw transactions copied from train.csv
+    database: "{{ target.database }}"
+    schema: "{{ target.schema }}_transactions_db"
+    tables:
+      - name: transactions
+        description: Raw card transactions with fraud labels
+        columns:
+          - name: transaction_time
+            description: Timestamp of the transaction
+            tests:
+              - not_null
+          - name: merch
+            description: Merchant name
+            tests:
+              - not_null
+          - name: cat_id
+            description: Category identifier
+            tests:
+              - not_null
+          - name: amount
+            description: Transaction amount in USD
+            tests:
+              - not_null
+          - name: name_1
+            description: First name of the customer
+          - name: name_2
+            description: Last name of the customer
+          - name: gender
+            description: Customer gender (M/F)
+          - name: street
+            description: Street address of the customer
+          - name: one_city
+            description: City of the customer
+          - name: us_state
+            description: Two-letter US state code
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['AL','AK','AZ','AR','CA','CO','CT','DC','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY']
+          - name: post_code
+            description: Postal code
+          - name: lat
+            description: Customer latitude
+          - name: lon
+            description: Customer longitude
+          - name: population_city
+            description: Population of the customer city
+          - name: jobs
+            description: Customer job title
+          - name: merchant_lat
+            description: Merchant latitude
+          - name: merchant_lon
+            description: Merchant longitude
+          - name: target
+            description: Fraud flag (1 = fraud)
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [0, 1]

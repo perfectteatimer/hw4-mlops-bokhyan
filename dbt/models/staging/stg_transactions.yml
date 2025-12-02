@@ -1,0 +1,77 @@
+version: 2
+
+models:
+  - name: stg_transactions
+    description: Cleaned transactions with normalized fields and derived attributes
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [transaction_id]
+    columns:
+      - name: transaction_id
+        description: Generated hash per transaction
+        tests:
+          - not_null
+          - unique
+      - name: transaction_ts
+        description: Timestamp of the transaction
+        tests:
+          - not_null
+      - name: transaction_date
+        description: Calendar date of the transaction
+        tests:
+          - not_null
+      - name: transaction_hour
+        description: Hour bucket for the transaction
+        tests:
+          - not_null
+      - name: merchant_id
+        description: Generated merchant identifier
+        tests:
+          - not_null
+      - name: merchant_name
+        description: Merchant label from source
+      - name: customer_id
+        description: Generated customer identifier
+        tests:
+          - not_null
+      - name: cat_id
+        description: Category id
+        tests:
+          - not_null
+      - name: amount
+        description: Transaction amount in USD
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              strictly: true
+      - name: amount_bucket
+        description: Amount segment using custom macro
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['small', 'medium', 'large', 'extra_large', 'unknown']
+      - name: gender
+        description: Normalized gender flag
+        tests:
+          - accepted_values:
+              values: ['M', 'F', 'U']
+      - name: us_state
+        description: Two-letter state code
+        tests:
+          - not_null
+          - relationships:
+              to: ref('states')
+              field: state_code
+      - name: is_fraud
+        description: Fraud indicator (1 = fraud)
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      - name: is_large_amount
+        description: Flag for amounts above large bucket
+      - name: day_name
+        description: Day name derived from transaction_ts
+      - name: state_name
+        description: Human readable state name from seed

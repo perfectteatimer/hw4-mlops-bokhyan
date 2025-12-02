@@ -1,0 +1,19 @@
+version: 2
+
+unit_tests:
+  - name: stg_transactions_unit
+    description: Validate staging logic for normalization and bucketing
+    model: stg_transactions
+    given:
+      - input: source('transactions_db', 'transactions')
+        rows:
+          - {transaction_time: '2020-01-01 10:00:00', merch: 'Test Shop', cat_id: 'games', amount: 25, name_1: 'Alex', name_2: 'Smith', gender: 'M', street: '1 Main', one_city: 'New York', us_state: 'NY', post_code: '10001', lat: 40.0, lon: -73.0, population_city: 1000, jobs: 'Analyst', merchant_lat: 40.5, merchant_lon: -73.5, target: 0}
+          - {transaction_time: '2020-01-02 12:00:00', merch: 'Test Shop', cat_id: 'travel', amount: 600, name_1: 'Jamie', name_2: 'Doe', gender: 'F', street: '2 Main', one_city: 'Los Angeles', us_state: 'CA', post_code: '90001', lat: 34.0, lon: -118.0, population_city: 2000, jobs: 'Engineer', merchant_lat: 34.5, merchant_lon: -118.3, target: 1}
+      - input: ref('states')
+        rows:
+          - {state_code: 'NY', state_name: 'New York'}
+          - {state_code: 'CA', state_name: 'California'}
+    expect:
+      rows:
+        - {transaction_date: '2020-01-01', amount_bucket: 'small', is_fraud: 0, gender: 'M', us_state: 'NY', day_name: 'Wed'}
+        - {transaction_date: '2020-01-02', amount_bucket: 'extra_large', is_fraud: 1, gender: 'F', us_state: 'CA', day_name: 'Thu'}

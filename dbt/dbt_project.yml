@@ -1,0 +1,41 @@
+name: 'hw4_dbt'
+version: '1.0.0'
+config-version: 2
+
+require-dbt-version: '>=1.8.0'
+
+profile: 'hw4_dbt'
+
+target-path: 'target'
+clean-targets:
+  - 'target'
+  - 'dbt_packages'
+
+model-paths: ['models']
+analysis-paths: ['analyses']
+test-paths: ['tests']
+seed-paths: ['seeds']
+macro-paths: ['macros']
+snapshot-paths: ['snapshots']
+
+quoting:
+  database: false
+  schema: false
+  identifier: false
+
+models:
+  hw4_dbt:
+    +materialized: view
+    staging:
+      +schema: staging
+      +tags: ['staging']
+      +materialized: view
+    marts:
+      +schema: marts
+      +materialized: table
+      +tags: ['mart']
+
+seeds:
+  hw4_dbt:
+    +schema: transactions_db
+    +quote_columns: false

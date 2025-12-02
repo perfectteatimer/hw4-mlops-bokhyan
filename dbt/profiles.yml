@@ -1,0 +1,10 @@
+hw4_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ./data/transactions.duckdb
+      schema: main
+      threads: 4
+      extensions:
+        - json

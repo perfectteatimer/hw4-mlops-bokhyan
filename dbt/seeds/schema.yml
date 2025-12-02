@@ -1,0 +1,13 @@
+version: 2
+
+seeds:
+  - name: states
+    description: US states reference
+    columns:
+      - name: state_code
+        tests:
+          - not_null
+          - unique
+      - name: state_name
+        tests:
+          - not_null

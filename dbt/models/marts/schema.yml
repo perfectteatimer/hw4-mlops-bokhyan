@@ -1,0 +1,136 @@
+version: 2
+
+models:
+  - name: mart_daily_state_metrics
+    description: Daily metrics per state including fraud and ticket size distribution
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [transaction_date, us_state]
+    columns:
+      - name: transaction_date
+        description: Calendar date
+        tests:
+          - not_null
+      - name: us_state
+        description: Two-letter state code
+        tests:
+          - not_null
+      - name: transaction_count
+        description: Number of transactions in the day-state bucket
+        tests:
+          - not_null
+      - name: fraud_rate
+        description: Fraud share per bucket (0-1 range)
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 1
+      - name: large_txn_share
+        description: Share of large or extra large transactions
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 1
+
+  - name: mart_fraud_by_category
+    description: Fraud rates and amounts per transaction category
+    tests:
+      - unique:
+          column_name: cat_id
+    columns:
+      - name: cat_id
+        description: Category identifier
+        tests:
+          - not_null
+      - name: fraud_rate
+        description: Fraud share as percentage
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 100
+
+  - name: mart_fraud_by_state
+    description: Fraud overview per state with unique actors and volume
+    tests:
+      - unique:
+          column_name: us_state
+    columns:
+      - name: us_state
+        description: Two-letter state code
+        tests:
+          - not_null
+      - name: fraud_rate
+        description: Fraud share as percentage
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 100
+      - name: unique_customers
+        description: Number of distinct customers in the state
+        tests:
+          - not_null
+
+  - name: mart_customer_risk_profile
+    description: Customer-level fraud KPIs and risk segmentation
+    tests:
+      - unique:
+          column_name: customer_id
+    columns:
+      - name: customer_id
+        description: Generated customer id
+        tests:
+          - not_null
+      - name: fraud_rate
+        description: Fraud share as percentage
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 100
+      - name: risk_level
+        description: Risk bucket derived from fraud_rate and large_txn_share
+        tests:
+          - accepted_values:
+              values: ['HIGH', 'MEDIUM', 'LOW']
+
+  - name: mart_hourly_fraud_pattern
+    description: Fraud patterns by weekday and hour of day
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [day_name, hour_of_day]
+    columns:
+      - name: day_name
+        description: Name of the weekday
+        tests:
+          - not_null
+      - name: hour_of_day
+        description: Hour of the day (0-23)
+        tests:
+          - not_null
+      - name: fraud_rate
+        description: Fraud share as percentage
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 100
+
+  - name: mart_merchant_analytics
+    description: Merchant level metrics, fraud share and suspiciousness flag
+    tests:
+      - unique:
+          column_name: merchant_id
+    columns:
+      - name: merchant_id
+        description: Generated merchant id
+        tests:
+          - not_null
+      - name: fraud_rate
+        description: Fraud share as percentage
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 100
+      - name: suspicious_flag
+        description: Binary suspicious flag
+        tests:
+          - accepted_values:
+              values: [0, 1]
