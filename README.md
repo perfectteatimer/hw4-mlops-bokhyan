@@ -63,7 +63,7 @@ DBT_PROFILES_DIR=$(pwd)/dbt pre-commit run --all-files
 
 ## Results
 ### Screenshot
-![DAG overview](hw4-mlops-bokhyan/docs/Screenshot 2025-12-02 at 15.02.52.png)
+![screen](docs/Screenshot%202025-12-02%20at%2015.02.52.png)
 ### Terminal
 ```bash
 (base) roman@romans-MacBook-Pro-2 hw4-mlops-bokhyan % pip install -r requirements.txt
