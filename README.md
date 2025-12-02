@@ -17,6 +17,11 @@
 - Docs: `dbt docs generate` output in `dbt/target`; quick DAG sketch stored at `docs/dag.png`.
 
 ## How to run
+0) Delete any possible trash
+```bash
+rm -rf dbt/dbt_packages
+```
+
 1) Install deps
 ```bash
 pip install -r requirements.txt
