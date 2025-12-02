@@ -1,5 +1,4 @@
-# hw 4 bokhyan mlops
-
+# HW 4 bokhyan mlops
 
 ## Project highlights
 - DuckDB profile stored in `dbt/profiles.yml` using local file `dbt/data/transactions.duckdb`.
@@ -37,8 +36,6 @@ DBT_PROFILES_DIR=. dbt test
 ```
 For the new dbt 1.8 unit test: `DBT_PROFILES_DIR=. dbt test --select test_type:unit`.
 
-Or use the shortcuts: `make deps`, `make seed`, `make run`, `make test`, or `make all` from repo root.
-
 4) Generate docs
 ```bash
 cd dbt
@@ -52,13 +49,9 @@ make lint       # sqlfluff lint
 make fmt        # sqlfluff fix
 ```
 
-6) Pre-commit (optional)
+6) Pre-commit
 ```bash
 pre-commit install
 pre-commit run --all-files
 ```
 
-## Notes
-- The dbt hub warns that `calogica/dbt_date` is deprecated in favor of `godatadriven/dbt_date`; it is kept to satisfy dbt_expectations’ dependency and the assignment requirement. The warning is safe to ignore.
-- The DuckDB file lives at `dbt/data/transactions.duckdb`. You can delete it anytime; dbt will recreate it on the next `dbt seed`.
-- Generated docs live in `dbt/target`; the lightweight DAG preview is saved as `docs/dag.png` for quick reference.
